@@ -10,12 +10,12 @@ WEBMIN_BINARY1="/usr/share/webmin/"
 WEBMIN_BINARY2="/opt/webmin/"
 CPANEL_BINARY="/usr/local/cpanel/cpanel"
 
-print_hash_line() 
+print_hash_line()
 {
   for ((i=1; i<=50; i++)); do
     echo -n "#"
   done
-  echo 
+  echo
 }
 
 e_e()
@@ -27,39 +27,39 @@ echo ""
 #OS Classification#
 ###################
 
-os_type() 
+os_type()
 {
-	if [ -f "/etc/os-release" ]; then
-		OS_DISTRO=$(sed -n 's/^PRETTY_NAME=\"\(.*\)\"/\1/p' /etc/os-release)
-		echo "Detected OS: $OS_DISTRO"
-	elif [ -f "/etc/lsb-release" ]; then
-		OS_DISTRO=$(sed -n 's/^DISTRIB_DESCRIPTION=\"\(.*\)\"/\1/p' /etc/lsb-release)
-		echo "Detected OS: $OS_DISTRO"
-	elif [ -f "/etc/debian_version"]; then
-		OS_DISTRO=$(cat /etc/debian_version)
-		echo "Detected OS: $OS_DISTRO"
-	fi
-	
-	if [[ ! -z "$PHY_DELL" ]]; then
-		SRV_ENV="Dell"
-		echo "Detected Hardware: $PHY_DELL"
-	elif [[ ! -z "$PHY_HP" ]]; then
-		SRV_ENV="HP"
-		echo "Detected Hardware: $PHY_HP"
-	elif [[ ! -z $VM_ENV ]]; then
-		SRV_ENV="VM"
-		echo "Detected VM Platform: $VM_ENV"
-	fi
-	
-	if [ -f "$PLESK_BINARY" ]; then
-		echo "Datected Panel: Plesk"
-	elif [ -f "$WEBMIN_BINARY1" ] || [ -f "$$WEBMIN_BINARY2" ]; then
-		echo "Detected Panel: Webmin"
-	elif [ -f "$CPANEL_BINARY" ]; then
-		echo "Detected Panel: Cpanel"
-	else
-		echo "No Control Panel Detected"
-	fi
+        if [ -f "/etc/os-release" ]; then
+                OS_DISTRO=$(sed -n 's/^PRETTY_NAME=\"\(.*\)\"/\1/p' /etc/os-release)
+                echo "Detected OS: $OS_DISTRO"
+        elif [ -f "/etc/lsb-release" ]; then
+                OS_DISTRO=$(sed -n 's/^DISTRIB_DESCRIPTION=\"\(.*\)\"/\1/p' /etc/lsb-release)
+                echo "Detected OS: $OS_DISTRO"
+        elif [ -f "/etc/debian_version"]; then
+                OS_DISTRO=$(cat /etc/debian_version)
+                echo "Detected OS: $OS_DISTRO"
+        fi
+
+        if [[ ! -z "$PHY_DELL" ]]; then
+                SRV_ENV="Dell"
+                echo "Detected Hardware: $PHY_DELL"
+        elif [[ ! -z "$PHY_HP" ]]; then
+                SRV_ENV="HP"
+                echo "Detected Hardware: $PHY_HP"
+        elif [[ ! -z $VM_ENV ]]; then
+                SRV_ENV="VM"
+                echo "Detected VM Platform: $VM_ENV"
+        fi
+
+        if [ -f "$PLESK_BINARY" ]; then
+                echo "Datected Panel: Plesk"
+        elif [ -f "$WEBMIN_BINARY1" ] || [ -f "$$WEBMIN_BINARY2" ]; then
+                echo "Detected Panel: Webmin"
+        elif [ -f "$CPANEL_BINARY" ]; then
+                echo "Detected Panel: Cpanel"
+        else
+                echo "No Control Panel Detected"
+        fi
 }
 
 
@@ -71,8 +71,8 @@ os_type()
 hw_details()
 {
 print_hash_line
-	echo "Server Make: $SRV_ENV"
-	echo "Server Model: $SRV_MODEL"
+        echo "Server Make: $SRV_ENV"
+        echo "Server Model: $SRV_MODEL"
 print_hash_line
 e_e
 }
@@ -83,7 +83,7 @@ e_e
 
 check_running_services()
 {
-services=("httpd" "apache2" "nginx" "mysql" "mysqld" "mariadb" "varnish" "postfix" "sendmail" "vstfpd" "pcsd")
+services=("httpd" "apache2" "nginx" "varnish" "php-fpm" "mysql" "mysqld" "mariadb" "redis*" "commvault" "nfs" "nfsd" "dovecot" "postfix" "sendmail" "vstfpd" "pcsd")
 print_hash_line
 echo "Detected Services:"
 for i in "${services[@]}"; do
@@ -126,38 +126,39 @@ OFS=$IFS
 IFS=
 print_hash_line
 echo "LVM List"
-LV_LIST=$(lvscan)
-	if [ -n "$LV_LIST" ]; then 
-		echo "$LV_LIST";
-	else
-		echo "NO LVs Found"
-	fi
+LV_LIST=$(lvscan 2> /dev/null)
+        if [ -n "$LV_LIST" ]; then
+                echo "$LV_LIST";
+        else
+                echo "NO LVs Found"
+        fi
 e_e
 
 print_hash_line
 echo "VG List"
-VG_LIST=$(vgscan)
-	if [ -n "$VG_LIST" ]; then 
-		echo "$VG_LIST";
-	else
-		echo "NO VGs Found"
-	fi
+VG_LIST=$(vgscan 2> /dev/null)
+        if [ -n "$VG_LIST" ]; then
+                echo "$VG_LIST";
+        else
+                echo "NO VGs Found"
+        fi
 e_e
 
 print_hash_line
 echo "PV List"
-PV_LIST=$(pvscan)
-	if [ -n "$PV_LIST" ]; then 
-		echo "$PV_LIST";
-	else
-		echo "NO PVs Found"
-	fi
+PV_LIST=$(pvscan 2> /dev/null)
+        if [ -n "$PV_LIST" ]; then
+                echo "$PV_LIST";
+        else
+                echo "NO PVs Found"
+        fi
 e_e
 
 print_hash_line
 echo "Fstab Entries"
 cat /etc/fstab
 e_e
+echo ""
 IFS=$OFS
 }
 
@@ -171,7 +172,6 @@ IFS=$OFS
 
 sar_cpu_fn()
 {
-                SAR_DAYS=$(ls $SAR_LOG | wc -l)
                 if [[ $SAR_DAYS -ge 1 ]]; then
                         echo "HIGH CPU Utilization for last $SAR_DAYS days:"
                         echo "SAR file          %CPU"
@@ -187,7 +187,6 @@ sar_cpu_fn()
 
 sar_mem_deb_fn()
 {
-                SAR_DAYS=$(ls $SAR_LOG | wc -l)
                 if [[ $SAR_DAYS -ge 1 ]]; then
                         echo "HIGH Memory Percentage & Commit Utilization for last $SAR_DAYS days:"
                         echo "SAR file          %memused %commit"
@@ -204,13 +203,12 @@ sar_mem_deb_fn()
 
 sar_mem_cent_fn()
 {
-                SAR_DAYS=$(ls $SAR_LOG | wc -l)
                 if [[ $SAR_DAYS -ge 1 ]]; then
                         echo "HIGH Memory Percentage & Commit Utilization for last $SAR_DAYS days:"
                         echo "SAR file          %memused %commit"
                         ls $SAR_LOG | while read line; do
                                 MEMORY_PERCENT=$(sar -r -f $line | grep '^[0-9]' | sed -e 's/AM\|PM//g' -e '/RESTART\|commit/d' | sort -s -n -k5,5 | awk 'END {print $4}')
-                                MEMORY_COMMIT=$(sar -r -f $line | grep '^[0-9]' | sed -e 's/AM\|PM//g' -e '/RESTART\|commit/d' | sort -s -n -k9,9 | awk 'END {print $8}')
+                                MEMORY_COMMIT=$(sar -r -f $line | grep '^[0-9]' | sed -e 's/AM\|PM//g' -e '/RESTART\|commit/d' | sort -s -n -k8,8 | awk 'END {print $8}')
                                 echo "$line:    $MEMORY_PERCENT $MEMORY_COMMIT";
                         done
                 else
@@ -224,6 +222,7 @@ sar_report()
 {
         if [[ $OS_DISTRO =~ Cent|Red|Alma|Rocky ]]; then
                 SAR_LOG="/var/log/sa/sa[0-3][0-9]"
+                SAR_DAYS=$(ls $SAR_LOG 2> /dev/null | wc -l)
                 print_hash_line
                 sar_cpu_fn
                 print_hash_line
@@ -231,6 +230,7 @@ sar_report()
                 print_hash_line
         elif [[ $OS_DISTRO =~ Ubuntu|Debian ]]; then
                 SAR_LOG="/var/log/sysstat/sa[0-3][0-9]"
+                SAR_DAYS=$(ls $SAR_LOG 2> /dev/null | wc -l)
                 print_hash_line
                 sar_cpu_fn
                 print_hash_line
