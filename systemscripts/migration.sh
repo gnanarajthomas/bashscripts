@@ -158,7 +158,6 @@ print_hash_line
 echo "Fstab Entries"
 cat /etc/fstab
 e_e
-echo ""
 IFS=$OFS
 }
 
