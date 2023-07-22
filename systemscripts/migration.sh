@@ -113,6 +113,14 @@ test -f /usr/bin/redis-server   && redis-server --version | awk '{printf ("Insta
 test -f /usr/sbin/php-fpm       && /usr/sbin/php-fpm -v | awk '/^PHP/ {printf ("Installed PHP-FPM Version \n%s\n", $2)}'
 }
 
+php_apache_modules()
+{
+test -f /usr/sbin/php-fpm 	&& echo "Installed PHP-FPM Modules:" 	&& /usr/sbin/php-fpm -m
+test -f /usr/sbin/php 		&& echo "Installed PHP Modules:" 	&& /usr/sbin/php -m
+test -f /usr/sbin/httpd 	&& echo "Loaded Apache Modules:" 	&& /usr/sbin/httpd -M
+test -f /usr/sbin/apache2ctl 	&& echo "Loaded Apache Modules:" 	&& /usr/sbin/apache2ctl -M
+}
+
 
 ##################
 #Server Resources#
@@ -263,5 +271,6 @@ os_type
 hw_details
 check_running_services
 application_version
+php_apache_modules
 server_resources
 sar_report
