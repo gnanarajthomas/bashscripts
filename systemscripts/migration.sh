@@ -111,13 +111,11 @@ e_e
 print_hash_line
 echo "Memory Details:"
 free -h
-print_hash_line
 e_e
 
 print_hash_line
 echo "Disk Layout"
 lsblk
-print_hash_line
 e_e
 
 print_hash_line
