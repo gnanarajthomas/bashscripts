@@ -18,6 +18,11 @@ print_hash_line()
   echo 
 }
 
+e_e()
+{
+echo ""
+}
+
 ###################
 #OS Classification#
 ###################
@@ -65,8 +70,11 @@ os_type()
 
 hw_details()
 {
+print_hash_line
 	echo "Server Make: $SRV_ENV"
 	echo "Server Model: $SRV_MODEL"
+print_hash_line
+e_e
 }
 
 ###################
@@ -76,6 +84,7 @@ hw_details()
 check_running_services()
 {
 services=("httpd" "apache2" "nginx" "mysql" "mysqld" "mariadb" "varnish" "postfix" "sendmail" "vstfpd" "pcsd")
+print_hash_line
 echo "Detected Services:"
 for i in "${services[@]}"; do
         if command -v systemctl >/dev/null 2>&1; then
@@ -86,6 +95,7 @@ for i in "${services[@]}"; do
                 echo "$i is running"
         fi
 done
+e_e
 }
 
 ##################
@@ -94,26 +104,26 @@ done
 
 server_resources()
 {
-echo "Number of CPU(s): $CPU_COUNT"
-echo ""
-
-echo "Memory Details:"
 print_hash_line
+echo "Number of CPU(s): $CPU_COUNT"
+e_e
+
+print_hash_line
+echo "Memory Details:"
 free -h
 print_hash_line
-echo ""
+e_e
 
-echo "Disk Layout"
 print_hash_line
+echo "Disk Layout"
 lsblk
 print_hash_line
-echo ""
+e_e
 
+print_hash_line
 echo "Mount point and FS"
 df -Th
-print_hash_line
-echo ""
-print_hash_line
+e_e
 OFS=$IFS
 IFS=
 print_hash_line
@@ -124,8 +134,7 @@ LV_LIST=$(lvscan)
 	else
 		echo "NO LVs Found"
 	fi
-print_hash_line
-echo ""
+e_e
 
 print_hash_line
 echo "VG List"
@@ -135,8 +144,7 @@ VG_LIST=$(vgscan)
 	else
 		echo "NO VGs Found"
 	fi
-print_hash_line
-echo ""
+e_e
 
 print_hash_line
 echo "PV List"
@@ -146,13 +154,12 @@ PV_LIST=$(pvscan)
 	else
 		echo "NO PVs Found"
 	fi
-print_hash_line
-echo ""
+e_e
 
 print_hash_line
 echo "Fstab Entries"
 cat /etc/fstab
-print_hash_line
+e_e
 echo ""
 IFS=$OFS
 }
