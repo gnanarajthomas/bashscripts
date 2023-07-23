@@ -331,6 +331,7 @@ e_e
 }
 
 
+
 os_type
 hw_details
 nw_details
@@ -341,3 +342,6 @@ application_version
 php_apache_modules
 server_resources
 sar_report
+
+banner "End of the Job"
+
