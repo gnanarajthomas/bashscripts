@@ -10,6 +10,18 @@ WEBMIN_BINARY1="/usr/share/webmin/"
 WEBMIN_BINARY2="/opt/webmin/"
 CPANEL_BINARY="/usr/local/cpanel/cpanel"
 
+banner()
+{
+  echo "+------------------------------------------+"
+  printf "| %-40s |\n" "`date`"
+  echo "|                                          |"
+  printf "|`tput bold` %-40s `tput sgr0`|\n" "$@"
+  echo "+------------------------------------------+"
+}
+
+banner "Starting the Job"
+sleep 3
+
 print_hash_line()
 {
   for ((i=1; i<=50; i++)); do
