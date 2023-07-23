@@ -71,14 +71,9 @@ os_type()
 hw_details()
 {
 print_hash_line
-echo "Server Make: $SRV_ENV"
-echo "Server Model: $SRV_MODEL"
-test -f /opt/dell/srvadmin/bin/omreport && omreport system version | awk NF && e_e && omreport storage vdisk | awk '/^ID/;/^Layout/;/^Size/'
-if [ -f /sbin/ssacli ]; then
-	ssacli controller all show | awk '{if (NR==2) print $6}' | while read line; 
-		do ssacli controller slot=$line logicaldrive all show; 
-	done
-fi
+        echo "Server Make: $SRV_ENV"
+        echo "Server Model: $SRV_MODEL"
+print_hash_line
 e_e
 }
 
@@ -274,56 +269,10 @@ sar_report()
         fi
 }
 
-nw_details()
-{
-print_hash_line
-echo "Network interfaceas and IPs:"
-ip -br a | grep UP
-BOND_COUNT=$(ip -br a | awk /^bond/ | wc -l)
-if [ $BOND_COUNT -ge 1 ]; then
-        ip -br a | awk /^bond/ | while read BOND; do echo "$BOND details:"; echo "Slaves: $(cat /sys/class/net/$BOND/bonding/slaves)"; grep "Bonding Mode"  /proc/net/bonding/bond0;
-done
-fi
-e_e
-}
-
-users_info()
-{
-print_hash_line
-echo "Users above UID 1000 and having any login shell:"
-MIN_UID=$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)
-ALL_UID=$(awk -v minid=$MIN_UID -F ":" '{if ($3 >= minid && $7 ~/sh$/) print $1}' /etc/passwd)
-echo "$ALL_UID"
-echo "Users above UID 1000 having false and nologin shell:"
-awk -v minid=$MIN_UID -F ":" '{if ($3 >= minid && $7 ~/false$|nologin$/) print $1}' /etc/passwd
-echo "Sudo Users:"
-echo "$ALL_UID" | while read uid;
-        do
-                sudo -l -U $uid | grep "may run" | awk '{print $2}';
-        done
-e_e
-}
-
-
-pcs_details()
-{
-print_hash_line
-if [ -f /usr/sbin/pcs ] && systemctl is-active pcsd 2>&1 > /dev/null; then
-echo "PCS Version:"
-pcs --version
-pcs status nodes config
-echo "PCS Resource groups and resources:"
-pcs resource show --groups
-fi
-e_e
-}
 
 
 os_type
 hw_details
-nw_details
-users_info
-pcs_details
 check_running_services
 application_version
 php_apache_modules
