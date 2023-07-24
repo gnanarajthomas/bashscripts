@@ -382,9 +382,9 @@ pcs_details
 check_running_services
 application_version
 php_apache_modules
-mysql_check
 server_resources
 sar_report
+mysql_check
 
 banner "End of the Job"
 
