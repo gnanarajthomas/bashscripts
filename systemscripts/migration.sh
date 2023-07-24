@@ -329,17 +329,15 @@ e_e
 mysql_check()
 {
 MY_PWD_FILE="/root/.my.cnf"
-        sql_queries()
-        {
-	cat<<EOC | bash
-        echo "Data Directory:"
-        mysql -Ne 'show variables like "%datadir%"'
-        echo "Mysql Databases:"
-        mysql -Ne 'show databases'
-        echo "Mysql Users:"
-        mysql -Ne "SELECT User, Host FROM mysql.user;"
-EOC
-        }
+	sql_queries()
+	{
+	echo "Data Directory:"
+	mysql -Ne 'show variables like "%datadir%"'
+	echo "Mysql Databases:"
+	mysql -Ne 'show databases'
+	echo "Mysql Users:"
+	mysql -Ne "SELECT User, Host FROM mysql.user;"
+	}
         if [ -f "$MY_PWD_FILE" ]; then
 #               if ${active_services[mysql]} || ${active_services[mysqld]} || ${active_service[mariadb]}; then
                 if [[ "${active_services[@]}" =~ mysql|mysqld|mariadb ]]; then
