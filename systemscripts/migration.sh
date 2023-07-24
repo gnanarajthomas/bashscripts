@@ -9,6 +9,7 @@ PLESK_BINARY="/usr/local/psa/admin/sbin/plesk"
 WEBMIN_BINARY1="/usr/share/webmin/"
 WEBMIN_BINARY2="/opt/webmin/"
 CPANEL_BINARY="/usr/local/cpanel/cpanel"
+declare -A active_services
 
 
 print_hash_line()
@@ -340,7 +341,6 @@ MY_PWD_FILE="/root/.my.cnf"
 	mysql -Ne "SELECT User, Host FROM mysql.user;"
 	}
         if [ -f "$MY_PWD_FILE" ]; then
-#               if ${active_services[mysql]} || ${active_services[mysqld]} || ${active_service[mariadb]}; then
                 if [[ "${active_services[@]}" =~ mysql|mysqld|mariadb ]]; then
                         SLAVE_YES=$(mysql -e 'show slave status \G' | grep -c "Slave_IO_State")
                         SLAVE_WC=$(mysql -e 'show slave status' | wc -l)
