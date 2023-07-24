@@ -194,7 +194,7 @@ e_e
 
 print_hash_line
 echo "Fstab Entries"
-cat /etc/fstab
+cat /etc/fstab | grep -Ev '^#'
 e_e
 echo ""
 IFS=$OFS
