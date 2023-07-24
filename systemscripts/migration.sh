@@ -299,8 +299,10 @@ echo "Users above UID 1000 and having any login shell:"
 MIN_UID=$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)
 ALL_UID=$(awk -v minid=$MIN_UID -F ":" '{if ($3 >= minid && $7 ~/sh$/) print $1}' /etc/passwd)
 echo "$ALL_UID"
+e_e
 echo "Users above UID 1000 having false and nologin shell:"
 awk -v minid=$MIN_UID -F ":" '{if ($3 >= minid && $7 ~/false$|nologin$/) print $1}' /etc/passwd
+e_e
 echo "Sudo Users:"
 echo "$ALL_UID" | while read uid;
         do
