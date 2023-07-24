@@ -30,6 +30,7 @@ echo ""
 
 os_type()
 {
+e_e
         if [ -f "/etc/os-release" ]; then
                 OS_DISTRO=$(sed -n 's/^PRETTY_NAME=\"\(.*\)\"/\1/p' /etc/os-release)
                 echo "Detected OS: $OS_DISTRO"
@@ -310,8 +311,8 @@ e_e
 
 pcs_details()
 {
-print_hash_line
 if [ -f /usr/sbin/pcs ] && systemctl is-active pcsd 2>&1 > /dev/null; then
+print_hash_line
 echo "PCS Version:"
 pcs --version
 pcs status nodes config
